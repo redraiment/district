@@ -6,7 +6,7 @@
 
     <groupId>me.zzp</groupId>
     <artifactId>district</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.0-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
