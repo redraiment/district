@@ -19,43 +19,7 @@ import static java.util.stream.Collectors.groupingBy;
  */
 public final class DistrictHelper {
 
-    private static class IpRange implements Comparable<IpRange> {
-
-        private final static long ROOT = 256 * 256 * 256;
-
-        public long lower;
-        public long upper;
-        public String district;
-        public int root;
-
-        public static IpRange of(long lower, long upper, String district) {
-            IpRange range = new IpRange();
-            range.lower = lower;
-            range.upper = upper;
-            range.district = district;
-            range.root = Long.valueOf(lower / ROOT).intValue();
-            return range;
-        }
-
-        public static IpRange of(long key) {
-            return of(key, key, null);
-        }
-
-        public int getRoot() {
-            return root;
-        }
-
-        @Override
-        public int compareTo(IpRange that) {
-            if (this.upper < that.lower) {
-                return -1;
-            } else if (this.lower > that.upper) {
-                return 1;
-            } else {
-                return 0;
-            }
-        }
-    }
+    private final static ThreadLocal<Cache> cache;
 
     private final static Map<String, String> districts;
     private final static Set<String> provinces;
@@ -66,6 +30,8 @@ public final class DistrictHelper {
     private final static IpRange[][] ips;
 
     static {
+        cache = ThreadLocal.withInitial(Cache::new);
+
         districts = mapOf("province-city");
         provinces = new HashSet<>(districts.values());
         cities = districts.keySet();
@@ -108,7 +74,7 @@ public final class DistrictHelper {
      * @param district 随机字符串。
      * @return 猜测的目标城市。
      */
-    public static String guess(final String district) {
+    private static String guessWithoutCache(final String district) {
         if (district == null || district.isEmpty()) {
             return "";
         }
@@ -132,6 +98,16 @@ public final class DistrictHelper {
 
         optional = provinces.stream().filter(district::contains).findFirst();
         return optional.isPresent()? optional.get().concat("/"): "";
+    }
+
+    public static String guess(final String district) {
+        if (district == null || district.isEmpty()) {
+            return "";
+        }
+        if (!cache.get().containsKey(district)) {
+            cache.get().put(district, guessWithoutCache(district));
+        }
+        return cache.get().get(district);
     }
 
     /**
