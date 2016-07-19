@@ -55,7 +55,7 @@ public final class DistrictHelper {
     }
 
     private static Scanner resource(final String name) {
-        return new Scanner(ClassLoader.getSystemResourceAsStream(String.format("me/zzp/district/meta/%s.txt", name)));
+        return new Scanner(DistrictHelper.class.getClassLoader().getResourceAsStream(String.format("me/zzp/district/meta/%s.txt", name)));
     }
 
     private static Map<String, String> mapOf(final String path) {
