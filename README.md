@@ -12,11 +12,18 @@
 ```xml
 <project>
     ...
+   <repositories>
+        <repository>
+            <id>zzp-mvn-repo</id>
+            <url>http://10.0.40.218</url>
+        </repository>
+    </repositories>
+    ...
     <dependencies>
         <dependency>
             <groupId>me.zzp</groupId>
             <artifactId>district</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.1.0</version>
         </dependency>
     </dependencies>
 </project>
