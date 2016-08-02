@@ -4,13 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
-
-import static java.util.stream.Collectors.groupingBy;
 
 /**
  * 归属地辅助类。
@@ -30,10 +28,15 @@ public final class DistrictHelper {
     private final static IpRange[][] ips;
 
     static {
-        cache = ThreadLocal.withInitial(Cache::new);
+        cache = new ThreadLocal<Cache>() {
+            @Override
+            protected Cache initialValue() {
+                return new Cache();
+            }
+        };
 
         districts = mapOf("province-city");
-        provinces = new HashSet<>(districts.values());
+        provinces = new HashSet<String>(districts.values());
         cities = districts.keySet();
 
         phoneNumbers = mapOf("phone-numbers");
@@ -43,14 +46,20 @@ public final class DistrictHelper {
         for (int index = 0; index < ips.length; index++) {
             ips[index] = new IpRange[0];
         }
-        try (Scanner rin = resource("ip")) {
-            List<IpRange> ranges = new ArrayList<>();
-            while (rin.hasNextLong()) {
-                ranges.add(IpRange.of(rin.nextLong(), rin.nextLong(), rin.next()));
-            }
-            ranges.stream().collect(groupingBy(IpRange::getRoot)).forEach((index, items) -> {
-                ips[index] = items.toArray(ips[index]);
-            });
+        Scanner rin = resource("ip");
+        List<List<IpRange>> ranges = new ArrayList<List<IpRange>>();
+        for (int index = 0; index < ips.length; index++) {
+            ranges.add(new LinkedList<IpRange>());
+        }
+        while (rin.hasNextLong()) {
+            IpRange range = IpRange.of(rin.nextLong(), rin.nextLong(), rin.next());
+            int index = range.getRoot();
+            ranges.get(index).add(range);
+        }
+        rin.close();
+
+        for (int index = 0; index < ips.length; index++) {
+            ips[index] = ranges.get(index).toArray(ips[index]);
         }
     }
 
@@ -59,12 +68,12 @@ public final class DistrictHelper {
     }
 
     private static Map<String, String> mapOf(final String path) {
-        Map<String, String> mapping = new HashMap<>();
-        try (Scanner rin = resource(path)) {
-            while (rin.hasNext()) {
-                mapping.put(rin.next(), rin.next());
-            }
+        Map<String, String> mapping = new HashMap<String, String>();
+        Scanner rin = resource(path);
+        while (rin.hasNext()) {
+            mapping.put(rin.next(), rin.next());
         }
+        rin.close();
         return mapping;
     }
 
@@ -90,14 +99,19 @@ public final class DistrictHelper {
             return String.format("%s/%s", districts.get(fixed), fixed);
         }
 
-        Optional<String> optional = cities.stream().filter(district::contains).findFirst();
-        if (optional.isPresent()) {
-            String city = optional.get();
-            return String.format("%s/%s", districts.get(city), city);
+        for (String city : cities) {
+            if (district.contains(city)) {
+                return String.format("%s/%s", districts.get(city), city);
+            }
         }
 
-        optional = provinces.stream().filter(district::contains).findFirst();
-        return optional.isPresent()? optional.get().concat("/"): "";
+        for (String province : provinces) {
+            if (district.contains(province)) {
+                return province.concat("/");
+            }
+        }
+
+        return "";
     }
 
     public static String guess(final String district) {

@@ -6,7 +6,7 @@
 
     <groupId>me.zzp</groupId>
     <artifactId>district</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
 
     <name>District</name>
     <description>District (province/city) of TelNumber, Phone Number and IP address in China</description>
@@ -130,7 +130,7 @@
     </build>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.6</maven.compiler.source>
+        <maven.compiler.target>1.6</maven.compiler.target>
     </properties>
 </project>
