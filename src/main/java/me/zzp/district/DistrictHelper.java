@@ -38,7 +38,7 @@ public final class DistrictHelper {
 
         districts = mapOf("province-city");
         provinces = new HashSet<String>(districts.values());
-        cities = new ArrayList<>(districts.keySet());
+        cities = new ArrayList<String>(districts.keySet());
         Collections.sort(cities, new StringLengthReverseComparator());
 
         phoneNumbers = mapOf("phone-numbers");

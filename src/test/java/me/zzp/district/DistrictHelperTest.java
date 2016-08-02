@@ -50,13 +50,13 @@ public class DistrictHelperTest {
 
     @Test
     public void testIp() {
-        try (Scanner rin = new Scanner(ClassLoader.getSystemResourceAsStream("test.txt"))) {
-            while (rin.hasNext()) {
-                String ip = rin.next();
-                String city = rin.next();
-                assertEquals(city, DistrictHelper.ofIp(ip));
-            }
+        Scanner rin = new Scanner(ClassLoader.getSystemResourceAsStream("test.txt"));
+        while (rin.hasNext()) {
+            String ip = rin.next();
+            String city = rin.next();
+            assertEquals(city, DistrictHelper.ofIp(ip));
         }
+        rin.close();
 
         assertEquals("", DistrictHelper.ofIp("0.0.0.0"));
         assertEquals("", DistrictHelper.ofIp("255.255.255.255"));
