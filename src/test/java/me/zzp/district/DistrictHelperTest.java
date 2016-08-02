@@ -22,6 +22,24 @@ public class DistrictHelperTest {
         assertEquals("", DistrictHelper.guess("浙-杭"));
     }
 
+    /*
+     * 极少数的名字有包含关系，例如“鞍山”与“马鞍山”
+     */
+    @Test
+    public void testAbbreviation() {
+        assertEquals("青海/海南藏族", DistrictHelper.guess("海南藏族"));
+        assertEquals("青海/海南藏族", DistrictHelper.guess("青海海南藏族"));
+        assertEquals("辽宁/鞍山", DistrictHelper.guess("鞍山"));
+        assertEquals("辽宁/鞍山", DistrictHelper.guess("辽宁鞍山"));
+        assertEquals("安徽/马鞍山", DistrictHelper.guess("马鞍山"));
+        assertEquals("安徽/马鞍山", DistrictHelper.guess("安徽马鞍山"));
+        assertEquals("内蒙古/兴安", DistrictHelper.guess("兴安"));
+        assertEquals("内蒙古/兴安", DistrictHelper.guess("内蒙兴安"));
+        assertEquals("内蒙古/兴安", DistrictHelper.guess("内蒙古兴安"));
+        assertEquals("黑龙江/大兴安岭", DistrictHelper.guess("大兴安岭"));
+        assertEquals("黑龙江/大兴安岭", DistrictHelper.guess("黑龙江大兴安岭"));
+    }
+
     @Test
     public void testTelNumber() {
         assertEquals("浙江/杭州", DistrictHelper.ofTelNumber("13656630000"));

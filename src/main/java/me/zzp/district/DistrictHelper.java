@@ -2,6 +2,7 @@ package me.zzp.district;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -21,7 +22,7 @@ public final class DistrictHelper {
 
     private final static Map<String, String> districts;
     private final static Set<String> provinces;
-    private final static Set<String> cities;
+    private final static List<String> cities;
 
     private final static Map<String, String> phoneNumbers;
     private final static Map<String, String> diallingCodes;
@@ -37,7 +38,8 @@ public final class DistrictHelper {
 
         districts = mapOf("province-city");
         provinces = new HashSet<String>(districts.values());
-        cities = districts.keySet();
+        cities = new ArrayList<>(districts.keySet());
+        Collections.sort(cities, new StringLengthReverseComparator());
 
         phoneNumbers = mapOf("phone-numbers");
         diallingCodes = mapOf("dialling-code");
