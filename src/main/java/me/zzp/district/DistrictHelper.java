@@ -26,6 +26,7 @@ public final class DistrictHelper {
 
     private final static Map<String, String> phoneNumbers;
     private final static Map<String, String> diallingCodes;
+    private final static Map<String, String> idCardNumbers;
     private final static IpRange[][] ips;
 
     static {
@@ -43,6 +44,7 @@ public final class DistrictHelper {
 
         phoneNumbers = mapOf("phone-numbers");
         diallingCodes = mapOf("dialling-code");
+        idCardNumbers = mapOf("idcard-numbers");
 
         ips = new IpRange[256][];
         for (int index = 0; index < ips.length; index++) {
@@ -185,5 +187,22 @@ public final class DistrictHelper {
         IpRange key = IpRange.of(ipToLong(ip));
         int index = Arrays.binarySearch(ips[key.getRoot()], key);
         return index >= 0? ips[key.getRoot()][index].district: "";
+    }
+
+    /**
+     * 返回身份证对于的归属地
+     *
+     * @param idcard 身份证号码
+     * @return 归属地
+     */
+    public static String ofIdCard(final String idcard) {
+        if (idcard != null && idcard.length() >= 6) {
+            String prefix = idcard.substring(0, 6);
+            if (idCardNumbers.containsKey(prefix)) {
+                return idCardNumbers.get(prefix);
+            }
+        }
+
+        return "";
     }
 }

@@ -61,4 +61,14 @@ public class DistrictHelperTest {
         assertEquals("", DistrictHelper.ofIp("0.0.0.0"));
         assertEquals("", DistrictHelper.ofIp("255.255.255.255"));
     }
+
+    @Test
+    public void testIdCard() {
+        assertEquals("湖南省/娄底市/冷水江市", DistrictHelper.ofIdCard("431381198109106573"));
+        assertEquals("四川省/达州市/通川区", DistrictHelper.ofIdCard("511702197207108849"));
+        assertEquals("浙江省/绍兴市/上虞县", DistrictHelper.ofIdCard("330622810725323"));
+        assertEquals("", DistrictHelper.ofIdCard("aaaaaaaa"));
+        assertEquals("", DistrictHelper.ofIdCard("1100aa"));
+        assertEquals("", DistrictHelper.ofIdCard(""));
+    }
 }
