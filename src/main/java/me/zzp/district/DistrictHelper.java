@@ -68,7 +68,8 @@ public final class DistrictHelper {
     }
 
     private static Scanner resource(final String name) {
-        return new Scanner(DistrictHelper.class.getClassLoader().getResourceAsStream(String.format("me/zzp/district/meta/%s.txt", name)));
+        return new Scanner(DistrictHelper.class.getClassLoader()
+                .getResourceAsStream(String.format("me/zzp/district/meta/%s.txt", name)));
     }
 
     private static Map<String, String> mapOf(final String path) {
@@ -186,7 +187,7 @@ public final class DistrictHelper {
     public static String ofIp(final String ip) {
         IpRange key = IpRange.of(ipToLong(ip));
         int index = Arrays.binarySearch(ips[key.getRoot()], key);
-        return index >= 0? ips[key.getRoot()][index].district: "";
+        return index >= 0 ? ips[key.getRoot()][index].district : "";
     }
 
     /**
@@ -201,8 +202,15 @@ public final class DistrictHelper {
             if (idCardNumbers.containsKey(prefix)) {
                 return idCardNumbers.get(prefix);
             }
+            prefix = idcard.substring(0, 4) + "00";
+            if (idCardNumbers.containsKey(prefix)) {
+                return idCardNumbers.get(prefix);
+            }
+            prefix = idcard.substring(0, 2) + "0000";
+            if (idCardNumbers.containsKey(prefix)) {
+                return idCardNumbers.get(prefix);
+            }
         }
-
         return "";
     }
 }
